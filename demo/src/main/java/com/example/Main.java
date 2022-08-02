@@ -3,21 +3,46 @@ package com.example;
 public class Main {
 
     public static void main(String[] args) {
-        //SinglyLL testList = new SinglyLL(new Node (33));
+        //SINGLYLL TESTING:
         SinglyLL testList = new SinglyLL();
-        // testList.insertTail(new Node (55));
-        // testList.insertTail(new Node (66));
+        // testList.insertTail(new Node (120));
+        // testList.insertTail(new Node (140));
         // testList.insertTail(new Node (100));
-        // testList.insertTail(new Node (125));
-        //testList.insertTail(new Node (101));
-        // testList.insertTail(new Node (77));
-        // testList.sort(testList.head);
+        // testList.insertTail(new Node (10));
+        // testList.insertTail(new Node (1));
+        testList.insertTail(new Node (1));
+        testList.insertTail(new Node (2));
+        testList.insertTail(new Node (3));
+
+        testList.print();
         System.out.println("test");
+        testList.head = testList.sortedInsert(testList.head,new Node(0)); //doesn't work when node is smallest?!
+        testList.print();
+        System.out.println();
 
-        //testList.sort(testList.head);
+        //DoublyLL TESTING:
+        // DoublyLL testdub = new DoublyLL();
+    
+        // testdub.insertHead(new Node (1));
+        // testdub.insertHead(new Node (90));
+        // testdub.insertHead(new Node (50));
+        // testdub.insertHead(new Node (60));
+        // testdub.insertHead(new Node (70));
 
+        // // testdub.insertHead(new Node (9));
+        // // testdub.insertHead(new Node (6));
+        // // testdub.insertHead(new Node (5));
+        // // testdub.insertHead(new Node (3));
+        // // testdub.insertHead(new Node (1));
         
-        testList.sortedInsert(new Node(60));
+        
+        // testdub.print();
+        // System.out.println();
+        
+    
+        // //testdub.head = testdub.sorted(testdub.head);
+        // testdub.head = testdub.sortedInsert(testdub.head, new Node (100));
+        // testdub.print();   
 
         // //testList.search(new Node(55));
         // //testList.insertHead(new Node(44));
@@ -31,7 +56,7 @@ public class Main {
         //testList.clear();
         
         //testList.search(new Node(67));
-        testList.print();
+        
     }
 
 }

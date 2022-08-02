@@ -2,8 +2,7 @@ package com.example;
 
 public class SinglyLL {
     Node head;
-    Node sorted;
-    boolean checkSorted = false;
+    Node tail; 
     //check true means sort has been called at least once
 
     //Variables 
@@ -16,6 +15,7 @@ public class SinglyLL {
     public SinglyLL(){
         this.head = null;
     }
+    
     public SinglyLL(Node n){
         this.head = n;
     }
@@ -25,7 +25,7 @@ public class SinglyLL {
             this.head = n;
         }
         else {
-            n.next = this.head;
+            n.setNext(this.head);
             this.head = n;
         }
     }
@@ -36,82 +36,68 @@ public class SinglyLL {
 		}
 		else {	
             Node curr = this.head;
-			while (curr.next != null) {
+			while (curr.getNext() != null) {
             curr = curr.next;
         }
         curr.next = n;
 		}
-        
-		
 	}
 
-    public void sortedInsert(Node n){
-        Node current = head;
-        if(checkSorted == false){
-            while (current.next != null) {
-                if (current.next.data > current.data) {
-                    current = current.next;
-                } else {
-                    current = null;
-                    sort(head);
-                }
-            } 
-        }
-        if(checkSorted == false) {
-            sorted = head;
-        }
-        
-        if (sorted == null || sorted.data >= n.data) {
-		n.next = sorted;
-		sorted = n;
+    public Node sortedInsert(Node headref, Node n){
+        if(isSorted() == false) {
+                headref = sort(headref);
+            }
+    
+        if (headref == null || headref.getData() >= n.getData()) {  //if you change sorted, to head, it works for inserting the first node but then sort() is broken.
+		n.setNext(headref); 
+		headref = n;
 	    }
 	    else {
 		/* Locate the node before point of insertion. */
-		Node curr = sorted;
-		while (curr.next != null && curr.next.data < n.data) {	
-		curr = curr.next; 
+		Node curr = headref;
+		while (curr.getNext() != null && curr.getNext().getData() < n.getData()) {	
+		curr = curr.getNext(); 
 		}
 		// if(curr.next.data == n.data){
 		// 	System.out.println(n.data + " is already in the list.");
 		// } 
 		// else {
-		n.next = curr.next;
-		curr.next = n;
+		n.setNext(curr.getNext());
+		curr.setNext(n);
 		// }	
 	    }
+        return headref;
     }
 
-
-    public void sort(Node headref){
-        sorted = null;
+    public Node sort(Node headref){
+        Node sorted = null;
         Node curr = headref;
         while (curr != null) {
-            Node next = curr.next;
-            checkSorted = true;
-            sortedInsert(curr);
+            Node next = curr.getNext();
+            sorted = sortedInsert(sorted, curr);
             //curr = curr.next;
             curr = next;
         }
-        head = sorted;
+        headref = sorted;
+        return headref;
     }
 
     public Node search(Node d){
         Node curr = head;
 		while (curr != null) {
-			if (curr.data == d.data){
-				System.out.println(curr.data);
+			if (curr.getData() == d.getData()){
+				System.out.println(curr.getData());
 				return curr;
 			}
-			curr = curr.next;
+			curr = curr.getNext();
 		}
 		System.out.println("Node is not present in the list.");
 		return null;
-
 	}
 
     public void deleteHead(){
         //sets head to head.next
-        this.head = this.head.next;
+        this.head = this.head.getNext();
     }
 
     public void deleteTail(){
@@ -123,16 +109,15 @@ public class SinglyLL {
             return;
         }
         //Edge case if there is only one element in list
-        if(curr.next == null){
+        if(curr.getNext() == null){
             head = null;
             return;
         }
         //main part
-        while(curr.next.next != null){
-            curr = curr.next;   
+        while(curr.getNext().getNext() != null){
+            curr = curr.getNext();   
         }
-        curr.next = null;
-
+        curr.setNext(null);
     }
 
     //delete Node if found in list
@@ -143,34 +128,33 @@ public class SinglyLL {
             return; 
         }
         //Edge case if head == node
-        if(curr.data == n.data){
-            head = head.next;
+        if(curr.getData() == n.getData()){
+            head = head.getNext();
             return;
         }
         //main part
-        while(curr.next.data != n.data){
-            curr = curr.next;
+        while(curr.getNext().getData() != n.getData()){
+            curr = curr.getNext();
             if(curr == null){
                 return;
             }
         }
         //if curr.next does equal n, do this next line.
-        curr.next = curr.next.next;        
+        curr.setNext(curr.getNext().getNext());        
     }
 
-    
     //NOT SURE
     public void clear(){
         this.head = null;
     }
 
-    public boolean check() {
+    public boolean isSorted() {
         Node current = head;
         
 
-        while(current.next != null) {
-        if (current.next.data > current.data) {
-            current = current.next;
+        while(current.getNext() != null) {
+        if (current.getNext().getData() > current.getData()) {
+            current = current.getNext();
         } else {
             return false;
         }
@@ -183,7 +167,7 @@ public class SinglyLL {
         
         Node curr = this.head;
         // if (curr != null) {
-            if (check()) {
+            if (isSorted()) {
                 System.out.println("Sorted Status: List is sorted");
             } else {
                 System.out.println("Sorted Status: List is not sorted");
@@ -193,8 +177,8 @@ public class SinglyLL {
         // }
         int iterator = 0;
         while(curr != null) {
-            System.out.println(curr.data);
-            curr = curr.next;
+            System.out.println(curr.getData());
+            curr = curr.getNext();
             iterator++;
         }
             System.out.println("List length: "+iterator+" elements");
