@@ -4,39 +4,38 @@ public class DoublyLL extends SinglyLL {
 
     public DoublyLL() {
         super();
-        this.tail = null;
+        setTail(null);
     }
 
     public DoublyLL(Node n)  {
         super();
-        this.tail = n;
     }
 
     public void insertHead(Node n){
-        if (this.head == null) {
-            this.head = n;
-            this.tail = n;
-            head.setPrev(null);
-            tail.setNext(null);
+        if (getHead() == null) {
+            setHead(n);
+            setTail(n);
+            getHead().setPrev(null);
+            getTail().setNext(null);
         }
         else {
-            this.head.setPrev(n);
-            n.setNext(this.head);
-            this.head = n;
+            getHead().setPrev(n);
+            n.setNext(getHead());
+            setHead(n);
         }
     }
 
     public void insertTail(Node n) {
-        if (head == null) {
-            this.head = n;
-            this.tail = n;
-            head.setPrev(null);
-            tail.setNext(null);
+        if (getHead() == null) {
+            setHead(n);
+            setTail(n);
+            getHead().setPrev(null);
+            getTail().setNext(null);
         } else {
-            tail.setNext(n);
-            n.setPrev(tail);
-            tail = n;
-            tail.setNext(null);
+            getTail().setNext(n);
+            n.setPrev(getTail());
+            setTail(n);
+            getTail().setNext(null);
         }
 
     }
@@ -48,7 +47,7 @@ public class DoublyLL extends SinglyLL {
 
     public Node sortedInsert(Node headref, Node n){
         if (isSorted() == false) {
-           headref = sorted(headref);
+           headref = sort(headref);
         }
 
         Node current;
@@ -83,10 +82,16 @@ public class DoublyLL extends SinglyLL {
             n.setPrev(current);
         }
 
+        Node temp = headref;
+            while(temp.getNext() != null){
+            temp = temp.getNext();
+            }
+            setTail(temp); 
+
         return headref;
     }
 
-    public Node sorted(Node headref){
+    public Node sort(Node headref){
         // initialize sorted - a sorted doubly linked list
         Node sorted = null;
 
@@ -122,85 +127,96 @@ public class DoublyLL extends SinglyLL {
 // 	}
 
     public void deleteHead(){
-        this.head = this.head.getNext();
-        if (this.head != null) {
-            this.head.setPrev(null);
+        if (getHead() == null) {
+            return;
+        }
+
+        setHead(getHead().getNext());
+
+        if (getHead() == null) {
+            setTail(null);
+        }
+        else {
+            getHead().setPrev(null);
         }
     }
 
     public void deleteTail(){
-        if (head == null) {
+        if (getHead() == null) {
             return;
         } else {
-            // checks if the list contains only one node
-            if (head != tail) {
-                // previous node to the nail will become new tail
-                tail = tail.getPrev();
+            // checks if the list doesn't contain only one node
+            if (getHead() != getTail()) {
+                // previous node to the tail will become new tail
+                setTail(getTail().getPrev());
                 // node next to curent tail will be made null
-                tail.setNext(null);
+                getTail().setNext(null);
 
             } else {
                 // if the list only contains one element
                 // delete it and make both head and tail null
-                head = null;
-                tail = null;
+                setHead(null);
+                setTail(null);
             }
         }
  
     }
 
         public void delete(Node n){ 
-            // base case (no node to delete)
-            if (head == null || n == null) {
+            Node curr = getHead();
+            Node temp = getTail();
+            //Edge case if list is Empty
+            if(curr == null){
+                return; 
+            }
+            //Edge case if head == node
+            if(curr.getData() == n.getData()) {
+                setHead(getHead().getNext());
+                getHead().setPrev(null);
                 return;
             }
-            
-            // if node to be deleted is head node
-            if (head == n) {
-                head = n.getNext();
+              //Edge case if tail == node
+            if(temp.getData() == n.getData()) {
+                //tail = tail.getNext();
+                setTail(getTail().getPrev());
+                getTail().setNext(null);
+                //if curr.next does equal n, do this next line.
+                return;
             }
 
-            // update next only if node to be deleted is NOT
-            // the tail node
-            if (n.getNext() != null) {
-                n.getNext().setPrev(n.getPrev());
+            //main part
+            while(curr.getNext().getData() != n.getData()){
+                curr = curr.getNext();
             }
-
-            // update next only if node to be deleted is NOT
-            // the head node
-            if (n.getPrev() != null) {
-                n.getPrev().setNext(n.getNext());
-            }
-
-            return;
-
+            //if curr.next does equal n, do this next line.
+            curr.setNext(curr.getNext().getNext());
+            curr.getNext().setPrev(curr);             
         }
 
-        //NOT SURE
         public void clear() {
-            this.head = null;
-            this.tail = null;
+            setHead(null);
+            setTail(null);
         }
 
-        public void print() {
-        Node curr = this.head;
-        // if (curr != null) {
-            // if (isSorted()) {
-            //     System.out.println("Sorted Status: List is sorted");
-            // } else {
-            //     System.out.println("Sorted Status: List is not sorted");
-            // }
-        // }else{
-        //     System.out.println("Soted Status: List is Empty");
-        // }
-        int iterator = 0;
-        while(curr != null) {
-            System.out.println(curr.getData());
-            curr = curr.getNext();
-            iterator++;
-        }
-            System.out.println("List length: "+iterator+" elements");
-    }
+    //     public void print() {
+    //     Node curr = this.head;
+    //     // if (curr != null) {
+    //         // if (isSorted()) {
+    //         //     System.out.println("Sorted Status: List is sorted");
+    //         // } else {
+    //         //     System.out.println("Sorted Status: List is not sorted");
+    //         // }
+    //     // }else{
+    //     //     System.out.println("Soted Status: List is Empty");
+    //     // }
+    //     int iterator = 0;
+    //     while(curr != null) {
+    //         System.out.println(curr.getData());
+    //         curr = curr.getNext();
+    //         iterator++;
+    //     }
+    //         System.out.println("List length: "+iterator+" elements");
+    // }
 }
 
 

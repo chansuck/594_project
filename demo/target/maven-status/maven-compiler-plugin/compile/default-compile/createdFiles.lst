@@ -1,3 +1,8 @@
-com\example\Main.class
-com\example\SinglyLL.class
-com\example\Node.class
+com/example/DoublyCLL.class
+com/example/LLStack.class
+com/example/LLQueue.class
+com/example/SinglyLL.class
+com/example/Node.class
+com/example/DoublyLL.class
+com/example/Main.class
+com/example/SinglyCLL.class

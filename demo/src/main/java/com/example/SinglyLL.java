@@ -1,8 +1,8 @@
 package com.example;
 
 public class SinglyLL {
-    Node head;
-    Node tail; 
+    private Node head;
+    private Node tail; 
     //check true means sort has been called at least once
 
     //Variables 
@@ -14,15 +14,19 @@ public class SinglyLL {
     //Overload constructor with a Node object argument to use as head
     public SinglyLL(){
         this.head = null;
+        this.tail = null;
     }
     
     public SinglyLL(Node n){
         this.head = n;
+        this.tail = head;
     }
 
+    //DONE
     public void insertHead(Node n){
-        if (this.head == null) {
+        if (getHead() == null) {
             this.head = n;
+            this.tail = n;
         }
         else {
             n.setNext(this.head);
@@ -30,41 +34,47 @@ public class SinglyLL {
         }
     }
 
+    //DONE
     public void insertTail(Node n){
-        if (this.head == null) {
-			this.head = n;
+        if (getHead() == null) {
+			setHead(n);
+            setTail(n);
 		}
 		else {	
             Node curr = this.head;
 			while (curr.getNext() != null) {
-            curr = curr.next;
+            curr = curr.getNext();
         }
-        curr.next = n;
+        curr.setNext(n);
+        setTail(n);
 		}
 	}
 
+
+    //DONE
     public Node sortedInsert(Node headref, Node n){
         if(isSorted() == false) {
                 headref = sort(headref);
             }
     
         if (headref == null || headref.getData() >= n.getData()) {  //if you change sorted, to head, it works for inserting the first node but then sort() is broken.
-		n.setNext(headref); 
-		headref = n;
+            n.setNext(headref); 
+            headref = n;
 	    }
 	    else {
 		/* Locate the node before point of insertion. */
-		Node curr = headref;
-		while (curr.getNext() != null && curr.getNext().getData() < n.getData()) {	
-		curr = curr.getNext(); 
-		}
-		// if(curr.next.data == n.data){
-		// 	System.out.println(n.data + " is already in the list.");
-		// } 
-		// else {
-		n.setNext(curr.getNext());
-		curr.setNext(n);
-		// }	
+            Node curr = headref;
+            while (curr.getNext() != null && curr.getNext().getData() < n.getData()) {	
+                curr = curr.getNext(); 
+            }
+            n.setNext(curr.getNext());
+            curr.setNext(n);
+
+            Node temp = headref;
+            while(temp.getNext() != null){
+                temp = temp.getNext();
+            }
+            setTail(temp);           
 	    }
         return headref;
     }
@@ -82,6 +92,7 @@ public class SinglyLL {
         return headref;
     }
 
+    //DONE
     public Node search(Node d){
         Node curr = head;
 		while (curr != null) {
@@ -95,15 +106,26 @@ public class SinglyLL {
 		return null;
 	}
 
+
+    //DONE
     public void deleteHead(){
+        //When list is empty 
+        if(head == null){
+            return;
+        }
         //sets head to head.next
         this.head = this.head.getNext();
+        if (head == null) {
+            tail = null;
+        }
     }
 
+
+    //DONE
     public void deleteTail(){
         // 1 -->    2-->    null
         // head  head.next   head.next.next
-        Node curr = head;
+        Node curr = getHead();
         //Edge case if list is empty
         if(curr == null){
             return;
@@ -111,6 +133,7 @@ public class SinglyLL {
         //Edge case if there is only one element in list
         if(curr.getNext() == null){
             head = null;
+            tail = null;
             return;
         }
         //main part
@@ -118,11 +141,14 @@ public class SinglyLL {
             curr = curr.getNext();   
         }
         curr.setNext(null);
+        setTail(curr);
     }
 
+    //DONE 
     //delete Node if found in list
     public void delete(Node n){
-        Node curr = head;
+        Node curr = getHead();
+        Node temp = getTail();
         //Edge case if list is Empty
         if(curr == null){
             return; 
@@ -132,6 +158,18 @@ public class SinglyLL {
             head = head.getNext();
             return;
         }
+        //Edge case if tail == node
+        if(temp.getData() == n.getData()) {
+            //tail = tail.getNext();
+            while(curr.getNext().getData() != n.getData()){
+                curr = curr.getNext();
+            }
+            setTail(curr);
+            //if curr.next does equal n, do this next line.
+            curr.setNext(curr.getNext().getNext()); //which will be null for this edge case 
+            return;
+        }
+
         //main part
         while(curr.getNext().getData() != n.getData()){
             curr = curr.getNext();
@@ -140,18 +178,17 @@ public class SinglyLL {
             }
         }
         //if curr.next does equal n, do this next line.
-        curr.setNext(curr.getNext().getNext());        
+        curr.setNext(curr.getNext().getNext());             
     }
 
-    //NOT SURE
+    //DONE
     public void clear(){
-        this.head = null;
+        setHead(null); 
+        setTail(null);
     }
 
     public boolean isSorted() {
-        Node current = head;
-        
-
+        Node current = getHead();
         while(current.getNext() != null) {
         if (current.getNext().getData() > current.getData()) {
             current = current.getNext();
@@ -162,10 +199,20 @@ public class SinglyLL {
         return true;
     }
 
+    public int size() {
+        int iterator = 0;
+        Node curr = getHead();
+        while (curr != null) {
+            curr = curr.getNext();
+            iterator++;
+        }
+        return iterator;
+    }
+
     public void print(){
         //System.out.println("TEST");
         
-        Node curr = this.head;
+        Node curr = getHead();
         // if (curr != null) {
             if (isSorted()) {
                 System.out.println("Sorted Status: List is sorted");
@@ -190,9 +237,23 @@ public class SinglyLL {
         //sorted status
         //list content
         //MAKE THIS ALL READABLE
-        
-
+        public Node getHead() {
+            return head;
+        }
+    
+        public void setHead(Node head) {
+            this.head = head;
+        }
+    
+        public Node getTail() {
+            return tail;
+        }
+    
+        public void setTail(Node tail) {
+            this.tail = tail;
+        }
     }
+
 
    
 
