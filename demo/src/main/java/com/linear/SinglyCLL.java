@@ -1,4 +1,4 @@
-package com.example;
+package com.linear;
 
 public class SinglyCLL extends SinglyLL{
 
@@ -41,68 +41,138 @@ public class SinglyCLL extends SinglyLL{
         }
     }
 
-    @Override
-    public Node sortedInsert(Node headref, Node n){
 
-        Node current2 = headref;
-    
-        // If the list is empty
-        if (current2 == null)
-        {
-            n.next = n;
-            headref = n;
+    public void insert(Node node, int position){
+        //if position is invalid. 0 or negative value
+        if(position < 1){
+            System.out.println("Invalid Position. Try again.");
         }
-    
-        // If the node to be inserted is the smallest
-        // then it has to be the new head
-        else if (current2.data >= n.data)
-        {
-    
-            // Find the last node of the list as it
-            // will be pointing to the head
-            while (current2.next != headref)
-                current2 = current2.next;
-            current2.next = n;
-            n.next = headref;
-            headref = n;
-        } else
-        {
-            // Locate the node before the point of insertion
-            while (current2.next != headref &&
-                current2.next.data < n.data)
-            {
-                current2 = current2.next;
+        //edge case if position is at head
+        else if(position ==1){
+            node.setNext(getHead());
+            setHead(node);
+            //circular part
+            getHead().setPrev(getTail());
+            getTail().setNext(getHead());
+        }
+        //normal case
+        else{
+
+            Node temp = getHead();
+            // loops till the position. if the position is bigger than the size of list, temp is null
+
+            if(position > size()+1){
+                System.out.println("Position is greater than size of list.");
             }
-            n.next = current2.next;
-            current2.next = n;
+            else{
+                for(int i = 1; i < position-1; i++){
+                    temp = temp.getNext();
+                }
+
+                node.setNext(temp.getNext());
+                temp.setNext(node);
+
+                //This loop is just to set the last element as tail         
+                Node tempTail = getHead();
+                int size = size();
+                for (int i=1; i<size; i++){
+                    tempTail = tempTail.getNext();
+                }
+                setTail(tempTail); 
+            }
+
         }
-    
-        // Return the new head
-        return headref;
   
     }
 
+
     @Override
-    public Node sort(Node headref){
-        Node sorted = null;
-        Node currentSort = headref;
-        //loop until curr equals tail
-        //System.out.println(curr.getData());
-        for(int i = 0; i < size(); i++ ){
-            System.out.println("yo");
-            System.out.println(currentSort.getNext().getData());
-            System.out.println("yo end");
-            //Node next = curr.getNext();
-            sorted = sortedInsert(sorted, currentSort);
-            System.out.println("PRINTING SORTED VARIABLE ...");
-            System.out.println(sorted.getData());
-            currentSort = currentSort.next;
-            System.out.println("YOOO HERE AFTER CURR NEXT");
-            //curr = next;
+    public void sortedInsert(Node n){
+        if(isSorted() == false) {
+            //System.out.println("DEFINITELY UNSORTED");
+            sort();
+        }
+    
+        //if new data is less than head of list, insert it to head
+        if (getSorted() == null || getSorted().getData() >= n.getData()) {  //if you change sorted, to head, it works for inserting the first node but then sort() is broken.
+            n.setNext(getSorted()); 
+            setSorted(n);
+            setHead(n);
+            getTail().setNext(getHead());
+        }
+        //else traverse through to find the spot
+        else {
+        /* Locate the node before point of insertion. */
+            Node curr = getHead();
+            while (curr.getNext().getData() != getHead().getData() && curr.getNext().getData() < n.getData()) {	
+                curr = curr.getNext(); 
+                //System.out.println("YO");
+            }
+            n.setNext(curr.getNext());
+            curr.setNext(n);     
+         
         }
 
-        headref = sorted;
-        return headref;
+        //This loop is just to set the last element as tail
+        Node temp = getHead();
+        int size = size();
+        for (int i = 1; i < size; i++){
+            temp = temp.getNext();
+        }
+        setTail(temp);  
+        //Circular part
+        getTail().setNext(getHead());
+
+
+    }
+
+    //THIS IS ONLY USED BY sort().
+    @Override
+    public void insertSorted(Node newNode)   { 
+        //If its head node
+        //If its head node
+        if (getSorted() == null || getSorted().getData() >= newNode.getData())    { 
+            newNode.setNext(getSorted()); 
+            setSorted(newNode); 
+        } 
+        else  { 
+            Node current = getSorted(); 
+            
+            while (current.getNext() != null && current.getNext().getData() < newNode.getData())   { 
+                current = current.next; 
+            } 
+            newNode.setNext(current.getNext());
+            current.setNext(newNode); 
+        } 
+    } 
+    
+
+    @Override
+    public void sort(){
+        setSorted(null);
+        Node curr = getHead();
+        int size = size();
+        for(int i = 0; i < size; i++){
+            Node next = curr.getNext();
+            insertSorted(curr);
+            //curr = curr.next;
+            curr = next;
+
+        }
+        // headref = sorted;
+        // return headref;
+        setHead(getSorted());
+
+        //Setting the tail
+        Node curr2 = getHead();
+        for(int i = 1; i < size; i++){
+            curr2 = curr2.getNext();
+
+        }
+        setTail(curr2);
+        //circular part
+        getTail().setNext(getHead());
+        
     }
 
     @Override
@@ -196,11 +266,7 @@ public class SinglyCLL extends SinglyLL{
 
         //Regular case
         Node curr = getHead();
-        while (curr != getTail()) {
-            System.out.println("Start of loop");
-            System.out.println(curr.getData());
-            System.out.println(getTail().getData());
-            System.out.println("End of loop");
+        while (curr.getNext() != getHead()) {
             curr = curr.getNext();
             iterator++;
         }

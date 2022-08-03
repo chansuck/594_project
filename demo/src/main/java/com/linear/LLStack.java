@@ -1,4 +1,4 @@
-package com.example;
+package com.linear;
 
 public class LLStack extends SinglyLL {
 
@@ -72,13 +72,13 @@ public class LLStack extends SinglyLL {
     }
 
     @Override
-    public Node sort(Node headref) {
-        return null;
+    public void sort() {
+        //leave blank
     }
 
     @Override
-    public Node sortedInsert(Node headref, Node n) {
-        return null;
+    public void sortedInsert(Node n) {
+        //leave blank
     }
     
     

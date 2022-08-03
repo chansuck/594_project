@@ -1,8 +1,9 @@
-package com.example;
+package com.linear;
 
 public class SinglyLL {
     private Node head;
     private Node tail; 
+    private Node sorted;
     //check true means sort has been called at least once
 
     //Variables 
@@ -50,46 +51,120 @@ public class SinglyLL {
 		}
 	}
 
+    public void insert(Node node, int position){
+        //if position is invalid. 0 or negative value
+        if(position < 1){
+            System.out.println("Invalid Position. Try again.");
+        }
+        //edge case if position is at head
+        else if(position ==1){
+            node.setNext(getHead());
+            setHead(node);
+        }
+        //normal case
+        else{
+
+            Node temp = getHead();
+            // loops till the position. if the position is bigger than the size of list, temp is null
+            for(int i = 1; i < position-1; i++){
+                if(temp != null){
+                    temp = temp.getNext();
+                }
+            }
+
+            //If position is actually found in list
+            if(temp != null){
+                node.setNext(temp.getNext());
+                temp.setNext(node);
+
+                //This loop is just to set the last element as tail         
+                Node tempTail = getHead();
+                while(tempTail.getNext() != null){
+                    tempTail = tempTail.getNext();
+                }
+                setTail(tempTail);  
+ 
+            }else{
+                System.out.println("Position is greater than size of list.");
+            }
+
+        }
+  
+    }
+
 
     //DONE
-    public Node sortedInsert(Node headref, Node n){
+    public void sortedInsert(Node n){
         if(isSorted() == false) {
-                headref = sort(headref);
+                sort();
             }
-    
-        if (headref == null || headref.getData() >= n.getData()) {  //if you change sorted, to head, it works for inserting the first node but then sort() is broken.
-            n.setNext(headref); 
-            headref = n;
+        
+        //if new data is less than head of list, insert it to head
+        if (getHead() == null || getHead().getData() >= n.getData()) {  //if you change sorted, to head, it works for inserting the first node but then sort() is broken.
+            n.setNext(getHead()); 
+            setHead(n);
+          
 	    }
+        //else traverse through to find the spot
 	    else {
 		/* Locate the node before point of insertion. */
-            Node curr = headref;
+            Node curr = getHead();
             while (curr.getNext() != null && curr.getNext().getData() < n.getData()) {	
                 curr = curr.getNext(); 
             }
             n.setNext(curr.getNext());
             curr.setNext(n);
 
-            Node temp = headref;
-            while(temp.getNext() != null){
-                temp = temp.getNext();
-            }
-            setTail(temp);           
+            
 	    }
-        return headref;
+
+        //This loop is just to set the last element as tail         
+        Node temp = getHead();
+        while(temp.getNext() != null){
+            temp = temp.getNext();
+        }
+        setTail(temp);  
+        //return headref;
     }
 
-    public Node sort(Node headref){
-        Node sorted = null;
-        Node curr = headref;
+    //THIS IS ONLY USED BY sort().
+    public void insertSorted(Node newNode)   { 
+        //If its head node
+        if (sorted == null || sorted.getData() >= newNode.getData())    { 
+            newNode.setNext(sorted); 
+            sorted = newNode; 
+        } 
+        else  { 
+            Node current = sorted; 
+            
+            while (current.getNext() != null && current.getNext().getData() < newNode.getData())   { 
+                current = current.next; 
+            } 
+            newNode.setNext(current.getNext());
+            current.setNext(newNode); 
+        } 
+    } 
+   
+    public void sort(){
+        sorted = null;
+        Node curr = getHead();
         while (curr != null) {
             Node next = curr.getNext();
-            sorted = sortedInsert(sorted, curr);
+            insertSorted(curr);
             //curr = curr.next;
             curr = next;
         }
-        headref = sorted;
-        return headref;
+        // headref = sorted;
+        // return headref;
+        setHead(sorted);
+
+        //Setting the tail
+        Node curr2 = getHead();
+        while(curr2.getNext() != null){
+            curr2 = curr2.getNext();
+        }
+        setTail(curr2);
+
     }
 
     //DONE
@@ -251,6 +326,13 @@ public class SinglyLL {
     
         public void setTail(Node tail) {
             this.tail = tail;
+        }
+
+        public Node getSorted(){
+            return (this.sorted);
+        }
+        public void setSorted(Node sorted){
+            this.sorted = sorted;
         }
     }
 

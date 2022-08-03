@@ -1,4 +1,4 @@
-package com.example;
+package com.linear;
 
 public class DoublyLL extends SinglyLL {
 
@@ -39,85 +39,157 @@ public class DoublyLL extends SinglyLL {
         }
 
     }
+
+    public void insert(Node node, int position){
+        //if position is invalid. 0 or negative value
+        if(position < 1){
+            System.out.println("Invalid Position. Try again.");
+        }
+        //edge case if position is at head
+        else if(position ==1){
+            
+            node.setNext(getHead()); //sets node next to head
+            node.setPrev(getHead().getPrev()); //sets nodes prev to null
+            node.getNext().setPrev(node); // sets heads prev to node
+            setHead(node); //sets new head to node
+        }
+        //normal case
+        else{
+
+            Node temp = getHead();
+            // loops till the position. if the position is bigger than the size of list, temp is null
+            for(int i = 1; i < position-1; i++){
+                if(temp != null){
+                    temp = temp.getNext();
+                }
+            }
+
+            //If position is actually found in list
+            if(temp != null){
+                node.setNext(temp.getNext()); //sets node's next to temp's next //temp->node->node.next
+                if(temp.getNext() != null){
+                    temp.getNext().setPrev(node);
+                }
+                temp.setNext(node);
+                node.setPrev(temp);
+
+                //This loop is just to set the last element as tail         
+                Node tempTail = getHead();
+                while(tempTail.getNext() != null){
+                    tempTail = tempTail.getNext();
+                }
+                setTail(tempTail);  
+
+
+            }else{
+                System.out.println("Position is greater than size of list.");
+            }
+
+        }
+  
+    }
+
+
+
+
+    
         
 //     public boolean isSorted() {
         // nothing needs to change.
 
 // }
 
-    public Node sortedInsert(Node headref, Node n){
+    public void sortedInsert(Node n){
         if (isSorted() == false) {
-           headref = sort(headref);
+          
+           sort();
         }
 
-        Node current;
-
-        // if list is empty
-        if (headref == null) {
-            headref = n;
-        }
-
-        // if the node is inserted at head
-
-        else if (headref.getData() >= n.getData()) {
-            n.setNext(headref);
-            n.getNext().setPrev(n);
-            headref = n;
-        } else {
-            current = headref;
-
-            // find node after the position for the new node
-            while (current.getNext() != null && current.getNext().getData() < n.getData()) {
-                current = current.getNext();
-            }
-
-            n.setNext(current.getNext());
-
-            // if the new node is not inserted at the tail
-            if (current.getNext() != null) {
+        if (getSorted() == null || getSorted().getData() >= n.getData())    { 
+            System.out.println("THIS THING HAPPENED");
+            n.setNext(getSorted()); 
+            n.setPrev(null);
+            if(getSorted() != null){
                 n.getNext().setPrev(n);
             }
+            setSorted(n); 
+            setHead(n);
+        } 
+        else  { 
+            Node current = getHead(); 
+            
+            while (current.getNext() != null && current.getNext().getData() < n.getData())   { 
+                current = current.getNext(); 
+            } 
+            n.setNext(current.getNext());
 
-            current.setNext(n);
             n.setPrev(current);
-        }
-
-        Node temp = headref;
-            while(temp.getNext() != null){
-            temp = temp.getNext();
+            if(current.getNext() != null){
+                n.getNext().setPrev(n);
             }
-            setTail(temp); 
+            current.setNext(n); 
+        } 
 
-        return headref;
+        Node temp = getHead();
+        while(temp.getNext() != null){
+            temp = temp.getNext();
+        }
+        setTail(temp);  
+        //return headref;
+
+
+
     }
 
-    public Node sort(Node headref){
+
+    //THIS IS ONLY USED BY sort().
+    public void insertSorted(Node newNode)   { 
+        //If its head node
+        if (getSorted() == null || getSorted().getData() >= newNode.getData())    { 
+            newNode.setNext(getSorted()); 
+            newNode.setPrev(null);
+            if(getSorted() != null){
+                newNode.getNext().setPrev(newNode);
+            }
+            setSorted(newNode); 
+        } 
+        else  { 
+            Node current = getSorted(); 
+            
+            while (current.getNext() != null && current.getNext().getData() < newNode.getData())   { 
+                current = current.next; 
+            } 
+            newNode.setNext(current.getNext());
+            newNode.setPrev(current);
+            if(getSorted() != null){
+                newNode.getNext().setPrev(newNode);
+            }
+            current.setNext(newNode); 
+        } 
+    } 
+
+    public void sort(){
         // initialize sorted - a sorted doubly linked list
-        Node sorted = null;
-
-        // traverse the initial doubly linked list and insert 
-        // the correctly placed nodes in sorted.
-
-        Node current = headref;
+        setSorted(null);
+   
+        Node current = getHead();
         while (current != null) {
 
             // store the next node from current
             Node next = current.getNext();
-
-            // remove connections from current (make prev and next be null)
-            current.setPrev(null);
-            current.setNext(null);
-
             // insert current into sorted
-
-            sorted = sortedInsert(sorted, current);
-
+            insertSorted(current);
             current = next;
         }
+        setHead(getSorted());
 
-        headref = sorted;
+        //Setting the tail
+        Node curr2 = getHead();
+        while(curr2.getNext() != null){
+            curr2 = curr2.getNext();
+        }
+        setTail(curr2);
 
-        return headref;
 
     }
 

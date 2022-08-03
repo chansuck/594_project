@@ -1,4 +1,4 @@
-package com.example;
+package com.linear;
 
 public class DoublyCLL extends DoublyLL {
 
@@ -125,100 +125,186 @@ public class DoublyCLL extends DoublyLL {
             getHead().setPrev(getTail());
         }
     }
-    
 
+    public void insert(Node node, int position){
+        //if position is invalid. 0 or negative value
+        if(position < 1){
+            System.out.println("Invalid Position. Try again.");
+        }
+        //edge case if position is at head
+        else if(position ==1){
+            node.setNext(getHead());
+            getHead().setPrev(node);
+            setHead(node);
+            //circular part
+            getHead().setPrev(getTail());
+            getTail().setNext(getHead());
+        }
+        //normal case
+        else{
+
+            Node temp = getHead();
+            // loops till the position. if the position is bigger than the size of list, temp is null
+
+            if(position > size()+1){
+                System.out.println("Position is greater than size of list.");
+            }
+            else{
+                for(int i = 1; i < position-1; i++){
+                    temp = temp.getNext();
+                }
+
+                node.setNext(temp.getNext());
+                if(temp.getNext() != null){
+                    temp.getNext().setPrev(node);
+                }
+                temp.setNext(node);
+                node.setPrev(temp);
+
+                //This loop is just to set the last element as tail         
+                Node tempTail = getHead();
+                int size = size();
+                for (int i=1; i<size; i++){
+                    tempTail = tempTail.getNext();
+                }
+                setTail(tempTail); 
+            }
+
+        }
+  
+    }
+
+    //THIS IS ONLY USED BY sort().
+    public void insertSorted(Node newNode)   { 
+        //If its head node
+        if (getSorted() == null || getSorted().getData() >= newNode.getData())    { 
+            newNode.setNext(getSorted()); 
+            newNode.setPrev(null);
+            if(getSorted() != null){
+                newNode.getNext().setPrev(newNode);
+            }
+            setSorted(newNode); 
+        } 
+        else  { 
+            Node current = getSorted(); 
+            
+            while (current.getNext() != null && current.getNext().getData() < newNode.getData())   { 
+                current = current.next; 
+            } 
+            newNode.setNext(current.getNext());
+            newNode.setPrev(current);
+            if(getSorted() != null){
+                newNode.getNext().setPrev(newNode);
+            }
+            current.setNext(newNode); 
+        } 
+    } 
+    
     @Override
-    public Node sort(Node headref) {
+    public void sort() {
          // initialize sorted - a sorted doubly linked list
-         Node sorted = null;
+         setSorted(null);
 
          // traverse the initial doubly linked list and insert 
          // the correctly placed nodes in sorted.
-        System.out.println(size());
-         Node current = headref;
-         for (int i = 0; i < 2; i++) {
- 
+       
+         Node current = getHead();
+         int size = size();
+         for (int i = 0; i < size; i++) {
              // store the next node from current
              Node next = current.getNext();
- 
-             // remove connections from current (make prev and next be null)
-             current.setPrev(null);
-             current.setNext(null);
- 
              // insert current into sorted
- 
-             sorted = sortedInsert(sorted, current);
- 
+             insertSorted(current);
              current = next;
          }
+         setHead(getSorted());
  
-         headref = sorted;
- 
-         return headref;
+        //Setting the tail
+        Node curr2 = getHead();
+        for(int i = 1; i < size; i++){
+            curr2 = curr2.getNext();
+        }
+        setTail(curr2);
+        //circular part
+        getTail().setNext(getHead());
+        getHead().setPrev(getTail());
  
      }
 
   
 
     @Override
-    public Node sortedInsert(Node headref, Node n) {
-        // if (isSorted() == false) {
-        //     headref = sort(headref);
-        //  }
- 
-         Node current;
- 
-         // if list is empty
-         if (headref == null) {
-             headref = n;
-         }
- 
-         // if the node is inserted at head
- 
-         else if (headref.getData() >= n.getData()) {
-             n.setNext(headref);
-             n.getNext().setPrev(n);
-             headref = n;
-             //headref.setPrev(getTail());
+    public void sortedInsert(Node n) {
+        if (isSorted() == false) {
+            sort();
+        }
+        if (getSorted() == null || getSorted().getData() >= n.getData())    { 
+            n.setNext(getSorted()); 
+            n.setPrev(getTail());
+            if(getSorted() != null){
+                n.getNext().setPrev(n);
+            }
+            setSorted(n); 
+            setHead(n);
+            getTail().setNext(getHead());;
+        } 
+        else  { 
+            Node current = getHead(); 
 
-         } else {
-             current = headref;
-             System.out.println(current.getData());
- 
-             // find node after the position for the new node
-             int count = 0;
-            //  while (current.getNext() != null && current.getNext().getData() < n.getData()) {
-             do {
-                if (current.getNext().getData() < n.getData()) {
-                    current = current.getNext();
-                    count ++;
-                }
-            } while (current.getNext() != getHead() && current.getNext().getData() < n.getData());
-            //  }
-            //  while (current.getNext() != null && current.getNext().getData() < n.getData()) {
-            //      current = current.getNext();
-            //  }
- 
-             n.setNext(current.getNext());
- 
-             // if the new node is not inserted at the tail
-            do {
-            // if (current.getNext() != null) {
-                 n.getNext().setPrev(n);
-             } while(current.getNext()!= getHead());
- 
-             current.setNext(n);
-             n.setPrev(current);
-         }
- 
-        //  Node temp = headref;
-        //      while(temp.getNext() != null){
-        //      temp = temp.getNext();
-        //      }
-        //      setTail(temp); 
- 
-         return headref;
+            while (current.getNext().getData() != getHead().getData() && current.getNext().getData() < n.getData())   { 
+
+                current = current.getNext();
+  
+            } 
+            n.setNext(current.getNext());
+            n.setPrev(current);
+            if(getSorted() != null){
+                //System.out.println("sorted is not null");
+                n.getNext().setPrev(n);
+            }
+            current.setNext(n); 
+         
+        
+        } 
+
+        //This loop is just to set the last element as tail
+        Node temp = getHead();
+
+        int size = size();
+        
+        for (int i = 1; i < size; i++){
+            temp = temp.getNext();
+        }
+        setTail(temp);  
+        //Circular part
+        getTail().setNext(getHead());
+         
      }
+
+     @Override
+     public boolean isSorted() {
+         Node current = getHead();
+         //Edge case: list of one element
+         if(current.getNext() == getHead()){
+             return true;
+         }
+         
+         //Regular case
+         while(current.getNext() != getTail()) {
+             if (current.getNext().getData() > current.getData()) {
+                 current = current.getNext();
+             } else {
+                 return false;
+             }
+         }
+         //Once more for tail comparison
+         if(current.getNext().getData() > current.getData()){
+             return true;
+ 
+         }else{
+             return false;
+         }
+    }
         
     
 
@@ -240,12 +326,16 @@ public class DoublyCLL extends DoublyLL {
         }
         //Regular case
         Node curr = getHead();
-        while (curr != getTail()) {
+        //iterator++;
+   
+        while (curr.getNext() != getHead()) {
             curr = curr.getNext();
+          
             iterator++;
         }
         curr = curr.getNext();
         iterator++;
+       
         return iterator;
     }
 

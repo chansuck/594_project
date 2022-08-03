@@ -1,4 +1,4 @@
-package com.example;
+package com.linear;
 
 public class LLQueue extends SinglyLL{
 
@@ -82,17 +82,17 @@ public class LLQueue extends SinglyLL{
     //GOTTA CHANGE THIS
 
     @Override
-    public Node sort(Node headref) {
+    public void sort() {
         // TODO Auto-generated method stub
         //return super.sort(headref);
-        return null;
+        
     }
 
     @Override
-    public Node sortedInsert(Node headref, Node n) {
+    public void sortedInsert(Node n) {
         // TODO Auto-generated method stub
         //return super.sortedInsert(headref, n);
-        return null;
+        
     }
     
     
