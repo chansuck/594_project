@@ -53,6 +53,7 @@ public class MinH {
             }
         return -1;
         }
+        return 0; // JUST MADE IT RETURN ZERO TO REMOVE ERROR FOR DEMO.
     }
 
     //insert(Integer key) method
@@ -80,4 +81,4 @@ public class MinH {
 
 
     
-}
+

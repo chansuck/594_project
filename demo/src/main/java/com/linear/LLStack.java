@@ -50,6 +50,13 @@ public class LLStack extends SinglyLL {
 
     }
 
+    public void clear() {
+        while (isEmpty() == false) {
+            pop(getHead());
+        }
+    }
+
+
     @Override
     public void delete(Node n) {
     
@@ -80,6 +87,4 @@ public class LLStack extends SinglyLL {
     public void sortedInsert(Node n) {
         //leave blank
     }
-    
-    
 }
